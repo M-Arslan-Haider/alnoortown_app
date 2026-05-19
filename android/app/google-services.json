@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1074033692644",
+    "project_id": "al-noor-town-app",
+    "storage_bucket": "al-noor-town-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074033692644:android:53bb11575fa9ec2a2741f1",
+        "android_client_info": {
+          "package_name": "com.example.alnoortown_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbX9BT2Be4s0G2X3KQC2Zc1Z6PNCCgNE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
