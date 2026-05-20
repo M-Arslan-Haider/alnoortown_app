@@ -1,8 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../screens/ComplaintScreen.dart';
-import '../screens/profile_screen.dart'; // Added import for ProfileScreen
+import '../screens/profile_screen.dart';
 import '../screens/login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class HomeScreen extends StatelessWidget {
     if (context.mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     }
   }
@@ -22,286 +23,322 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final userName = authProvider.getUserName();
+    final userName  = authProvider.getUserName();
     final userEmail = authProvider.getUserEmail();
 
     return Scaffold(
+      backgroundColor: AppColors.offWhite,
       appBar: AppBar(
-        title: const Text('Al Noor Town'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        centerTitle: true,
-        elevation: 2,
-      ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            // Drawer Header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Theme.of(context).primaryColor, Theme.of(context).primaryColor.withOpacity(0.7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Colors.deepPurple,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    userName,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    userEmail,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.goldDark, AppColors.gold],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            // Drawer Items
-            ListTile(
-              leading: const Icon(Icons.home, color: Colors.deepPurple),
-              title: const Text('Dashboard'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.person_outline, color: Colors.deepPurple),
-              title: const Text('My Profile'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.report_problem_outlined, color: Colors.deepPurple),
-              title: const Text('Submit Complaint'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ComplaintScreen()),
-                );
-              },
-            ),
-            const Divider(),
-            const Spacer(),
-            // Sign Out Button at bottom
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton.icon(
-                onPressed: () => _handleSignOut(context),
-                icon: const Icon(Icons.logout),
-                label: const Text('Sign Out'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.apartment,
-                size: 100,
-                color: Colors.deepPurple,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Welcome to Al Noor Town!',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Your trusted community management system',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.deepPurple[50]!, Colors.deepPurple[100]!],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.person_outline,
-                          label: 'Profile',
-                          color: Colors.blue,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                            );
-                          },
-                        ),
-                        _buildQuickActionCard(
-                          context,
-                          icon: Icons.report_problem_outlined,
-                          label: 'Complaint',
-                          color: Colors.orange,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const ComplaintScreen()),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.email_outlined, color: Colors.deepPurple),
-                        const SizedBox(width: 12),
-                        const Text(
-                          'Email:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            userEmail,
-                            style: const TextStyle(fontSize: 14),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.admin_panel_settings_outlined, color: Colors.deepPurple),
-                        const SizedBox(width: 12),
-                        const Text(
-                          'Status:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.green[100],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Active',
-                            style: TextStyle(color: Colors.green, fontSize: 12),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
+        ),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'AL NOOR TOWN',
+          style: TextStyle(
+            fontFamily: 'Cormorant',
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: AppColors.white,
+            letterSpacing: 1,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: AppColors.white),
+      ),
+      drawer: _buildDrawer(context, userName, userEmail),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 36, 24, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Greeting
+            Text(
+              'Welcome back,',
+              style: TextStyle(
+                fontFamily: 'Cormorant',
+                fontSize: 15,
+                color: AppColors.grey,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              userName,
+              style: const TextStyle(
+                fontFamily: 'Cormorant',
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: AppColors.charcoal,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            // Action Cards
+            _ActionTile(
+              icon: Icons.person_outline,
+              label: 'My Profile',
+              subtitle: 'View and edit your information',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
+            ),
+            const SizedBox(height: 14),
+            _ActionTile(
+              icon: Icons.report_problem_outlined,
+              label: 'Submit Complaint',
+              subtitle: 'Report an issue to management',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ComplaintScreen()),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildQuickActionCard(
-      BuildContext context, {
-        required IconData icon,
-        required String label,
-        required Color color,
-        required VoidCallback onTap,
-      }) {
+  Widget _buildDrawer(BuildContext context, String userName, String userEmail) {
+    return Drawer(
+      backgroundColor: AppColors.white,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(24, 56, 24, 28),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.goldDark, AppColors.gold],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.white.withOpacity(0.2),
+                    border: Border.all(color: AppColors.white, width: 1.5),
+                  ),
+                  child: const Icon(Icons.person, size: 30, color: AppColors.white),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  userName,
+                  style: const TextStyle(
+                    fontFamily: 'Cormorant',
+                    color: AppColors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  userEmail,
+                  style: TextStyle(
+                    fontFamily: 'Cormorant',
+                    color: AppColors.white.withOpacity(0.85),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          _DrawerItem(icon: Icons.home_outlined,           label: 'Dashboard',        onTap: () => Navigator.pop(context)),
+          _DrawerItem(
+            icon: Icons.person_outline,
+            label: 'My Profile',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+            },
+          ),
+          _DrawerItem(
+            icon: Icons.report_problem_outlined,
+            label: 'Submit Complaint',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const ComplaintScreen()));
+            },
+          ),
+
+          const Spacer(),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
+            child: GestureDetector(
+              onTap: () => _handleSignOut(context),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.error, width: 1.2),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.logout, color: AppColors.error, size: 18),
+                    SizedBox(width: 8),
+                    Text(
+                      'Sign Out',
+                      style: TextStyle(
+                        fontFamily: 'Cormorant',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.error,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 12),
+            child: Text(
+              'Version 1.0.0',
+              style: TextStyle(
+                fontFamily: 'Cormorant',
+                fontSize: 12,
+                color: AppColors.grey,
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          // ← ADD THIS
+          const Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: Text(
+              'Powered by MetaXperts',
+              style: TextStyle(
+                fontFamily: 'Cormorant',
+                fontSize: 12,
+                color: AppColors.grey,
+                letterSpacing: 0.5,
+                fontStyle: FontStyle.italic,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Action Tile ────────────────────────────────────────────────
+class _ActionTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _ActionTile({
+    required this.icon,
+    required this.label,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 120,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.divider),
         ),
-        child: Column(
+        child: Row(
           children: [
-            Icon(icon, size: 40, color: color),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: color,
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.gold.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: AppColors.gold, size: 22),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontFamily: 'Cormorant',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.charcoal,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontFamily: 'Cormorant',
+                      fontSize: 13,
+                      color: AppColors.grey,
+                    ),
+                  ),
+                ],
               ),
             ),
+            const Icon(Icons.arrow_forward_ios, size: 13, color: AppColors.greyLight),
           ],
         ),
       ),
+    );
+  }
+}
+
+// ── Drawer Item ────────────────────────────────────────────────
+class _DrawerItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _DrawerItem({required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
+      leading: Icon(icon, color: AppColors.gold, size: 22),
+      title: Text(
+        label,
+        style: const TextStyle(
+          fontFamily: 'Cormorant',
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: AppColors.charcoal,
+        ),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 13, color: AppColors.greyLight),
+      onTap: onTap,
     );
   }
 }
