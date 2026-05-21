@@ -757,7 +757,7 @@ class HomeScreen extends StatelessWidget {
         onSignOut: () => _handleSignOut(context),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 36, 24, 24),
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -771,20 +771,18 @@ class HomeScreen extends StatelessWidget {
                 letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             const Text(
               'How can we help today?',
               style: TextStyle(
                 fontFamily: 'Cormorant',
-                fontSize: 28,
+                fontSize: 19,
                 fontWeight: FontWeight.w700,
                 color: AppColors.charcoal,
               ),
             ),
 
-            const SizedBox(height: 25),
-
-            // ── Two large cards ──
+            const SizedBox(height: 15),
             // ── Two large cards ──
             Row(
               children: [
@@ -851,7 +849,7 @@ class _BigCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 130,// ← fixed height, tweak to taste
+        height: 100,// ← fixed height, tweak to taste
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(20),
@@ -867,7 +865,7 @@ class _BigCard extends StatelessWidget {
               label,
               style: TextStyle(
                 fontFamily: 'Cormorant',
-                fontSize: 18,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: labelColor,
               ),
