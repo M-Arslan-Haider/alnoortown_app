@@ -2,6 +2,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'login_screen.dart';
+// import '../main.dart'; // AuthWrapper
 //
 // class AppColors {
 //   static const Color white = Color(0xFFFFFFFF);
@@ -20,7 +21,6 @@
 //
 // class _SplashScreenState extends State<SplashScreen>
 //     with SingleTickerProviderStateMixin {
-//
 //   late final AnimationController _fadeController;
 //   late final Animation<double> _fadeAnimation;
 //
@@ -56,7 +56,7 @@
 //       context,
 //       PageRouteBuilder(
 //         transitionDuration: const Duration(milliseconds: 400),
-//         pageBuilder: (_, __, ___) => const LoginScreen(),
+//         pageBuilder: (_, __, ___) => const AuthWrapper(),
 //         transitionsBuilder: (_, animation, __, child) {
 //           return FadeTransition(opacity: animation, child: child);
 //         },
@@ -247,19 +247,10 @@
 //   }
 // }
 
-// screens/splash_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'login_screen.dart';
+import '../core/app_colors.dart';
 import '../main.dart'; // AuthWrapper
-
-class AppColors {
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color gold = Color(0xFFC9A84C);
-  static const Color goldLight = Color(0xFFDEC46A);
-  static const Color goldDark = Color(0xFFA07C2E);
-  static const Color charcoal = Color(0xFF2C2C2C);
-}
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -271,7 +262,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _fadeController;
-  late final Animation<double> _fadeAnimation;
+  late final Animation<double>   _fadeAnimation;
 
   @override
   void initState() {
@@ -279,7 +270,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
+        statusBarColor:         Colors.transparent,
         statusBarIconBrightness: Brightness.light,
       ),
     );
@@ -288,12 +279,8 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-
     _fadeAnimation = CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeIn,
-    );
-
+        parent: _fadeController, curve: Curves.easeIn);
     _fadeController.forward();
 
     Future.delayed(const Duration(milliseconds: 2000), _navigate);
@@ -306,9 +293,8 @@ class _SplashScreenState extends State<SplashScreen>
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 400),
         pageBuilder: (_, __, ___) => const AuthWrapper(),
-        transitionsBuilder: (_, animation, __, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
       ),
     );
   }
@@ -325,22 +311,24 @@ class _SplashScreenState extends State<SplashScreen>
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.goldDark, AppColors.gold, AppColors.goldLight],
+            end:   Alignment.bottomRight,
+            colors: [
+              AppColors.goldDark,
+              AppColors.gold,
+              AppColors.goldLight,
+            ],
           ),
         ),
         child: Stack(
           children: [
-            // Subtle background circles
+            // ── Decorative background circles ──
             Positioned(
-              top: -80,
-              right: -80,
+              top: -80, right: -80,
               child: Container(
-                width: 220,
-                height: 220,
+                width: 220, height: 220,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.white.withOpacity(0.08),
@@ -348,11 +336,9 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
             Positioned(
-              bottom: -60,
-              left: -60,
+              bottom: -60, left: -60,
               child: Container(
-                width: 180,
-                height: 180,
+                width: 180, height: 180,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.white.withOpacity(0.06),
@@ -363,8 +349,7 @@ class _SplashScreenState extends State<SplashScreen>
               top: MediaQuery.of(context).size.height * 0.4,
               left: -40,
               child: Container(
-                width: 120,
-                height: 120,
+                width: 120, height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.white.withOpacity(0.04),
@@ -372,26 +357,25 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
 
-            // Main content
+            // ── Main content ──
             SafeArea(
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo (centered vertically)
+                    // Logo centred vertically
                     Expanded(
                       child: Center(
                         child: Container(
-                          width: 140,
-                          height: 140,
+                          width: 140, height: 140,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: AppColors.white,
                             boxShadow: [
                               BoxShadow(
                                 color: AppColors.charcoal.withOpacity(0.15),
-                                blurRadius: 30,
+                                blurRadius:  30,
                                 spreadRadius: 5,
                               ),
                             ],
@@ -413,7 +397,8 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ),
-                    // App Name at bottom
+
+                    // App name + loading dots
                     Padding(
                       padding: const EdgeInsets.only(bottom: 50),
                       child: Column(
@@ -429,7 +414,6 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ),
                           const SizedBox(height: 12),
-                          // Loading dots
                           _LoadingDots(),
                         ],
                       ),
@@ -445,6 +429,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
+// ── Animated loading dots ──────────────────────────────────────
 class _LoadingDots extends StatefulWidget {
   @override
   State<_LoadingDots> createState() => _LoadingDotsState();
@@ -476,14 +461,11 @@ class _LoadingDotsState extends State<_LoadingDots>
       children: List.generate(3, (index) {
         return AnimatedBuilder(
           animation: _controller,
-          builder: (context, child) {
-            final value = _controller.value;
-            final delay = index * 0.3;
-            final opacity = ((value + delay) % 1.0);
+          builder: (_, __) {
+            final opacity = (_controller.value + index * 0.3) % 1.0;
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 5),
-              width: 8,
-              height: 8,
+              width: 8, height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: AppColors.white.withOpacity(opacity),

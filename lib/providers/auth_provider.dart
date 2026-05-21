@@ -1,3 +1,4 @@
+//
 // import 'package:flutter/material.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 // import '../services/auth_service.dart';
@@ -149,6 +150,18 @@
 //     }
 //   }
 //
+//   // Check if profile is complete
+//   bool isProfileComplete() {
+//     return _userPhone != null &&
+//         _userPhone!.isNotEmpty &&
+//         _userHouseNumber != null &&
+//         _userHouseNumber!.isNotEmpty &&
+//         _userCnic != null &&
+//         _userCnic!.isNotEmpty &&
+//         _userFatherName != null &&
+//         _userFatherName!.isNotEmpty;
+//   }
+//
 //   // Sign out
 //   Future<void> signOut() async {
 //     await _authService.signOut();
@@ -195,6 +208,7 @@ import '../services/auth_service.dart';
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
+  bool _isInitialized = false;
   String? _errorMessage;
 
   // User profile additional data
@@ -204,12 +218,33 @@ class AuthProvider with ChangeNotifier {
   String? _userFatherName;
 
   bool get isLoading => _isLoading;
+  bool get isInitialized => _isInitialized;
   String? get errorMessage => _errorMessage;
 
   String? getUserPhone() => _userPhone;
   String? getUserHouseNumber() => _userHouseNumber;
   String? getUserCnic() => _userCnic;
   String? getUserFatherName() => _userFatherName;
+
+  // Constructor - app start pe automatically data load karo
+  AuthProvider() {
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
+      // Firebase auth state settle hone ka wait karo
+      await _authService.user.first;
+      if (_authService.currentUser != null) {
+        await _loadUserData();
+      }
+    } catch (e) {
+      print("Error during init: $e");
+    } finally {
+      _isInitialized = true;
+      notifyListeners();
+    }
+  }
 
   // Sign up
   Future<bool> signUp({
