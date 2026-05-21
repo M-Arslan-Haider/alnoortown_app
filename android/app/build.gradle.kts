@@ -6,7 +6,7 @@
 //////}
 //////
 //////android {
-//////    namespace = "com.example.alnoortown_app"
+//////    namespace = "com.alnoortown.residentapp"
 //////    compileSdk = flutter.compileSdkVersion
 //////    ndkVersion = flutter.ndkVersion
 //////
@@ -21,7 +21,7 @@
 //////
 //////    defaultConfig {
 //////        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-//////        applicationId = "com.example.alnoortown_app"
+//////        applicationId = "com.alnoortown.residentapp"
 //////        // You can update the following values to match your application needs.
 //////        // For more information, see: https://flutter.dev/to/review-gradle-config.
 //////        minSdk = flutter.minSdkVersion
@@ -55,7 +55,7 @@
 ////}
 ////
 ////android {
-////    namespace = "com.example.alnoortown_app"
+////    namespace = "com.alnoortown.residentapp"
 ////    compileSdk = flutter.compileSdkVersion
 ////    ndkVersion = flutter.ndkVersion
 ////
@@ -69,7 +69,7 @@
 ////    }
 ////
 ////    defaultConfig {
-////        applicationId = "com.example.alnoortown_app"
+////        applicationId = "com.alnoortown.residentapp"
 ////        minSdk = flutter.minSdkVersion
 ////        targetSdk = flutter.targetSdkVersion
 ////        versionCode = flutter.versionCode
@@ -108,7 +108,7 @@
 //}
 //
 //android {
-//    namespace = "com.example.alnoortown_app"
+//    namespace = "com.alnoortown.residentapp"
 //    ndkVersion = "29.0.14206865"
 //    compileSdk = 36
 //
@@ -123,7 +123,7 @@
 //    }
 //
 //    defaultConfig {
-//        applicationId = "com.example.alnoortown_app"
+//        applicationId = "com.alnoortown.residentapp"
 //        minSdk = flutter.minSdkVersion
 //        targetSdk = 36
 //        versionCode = flutter.versionCode
@@ -184,7 +184,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.alnoortown_app"
+    namespace = "com.alnoortown.residentapp"
     ndkVersion = "29.0.14206865"
     compileSdk = 35  // Changed from 36 to 35 for better Flutter compatibility
 
@@ -201,7 +201,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.alnoortown_app"
+        applicationId = "com.alnoortown.residentapp"
         minSdk = flutter.minSdkVersion
         targetSdk = 35  // Changed from 36 to 35
         versionCode = flutter.versionCode

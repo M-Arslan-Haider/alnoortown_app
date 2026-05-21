@@ -7,12 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1074033692644:android:53bb11575fa9ec2a2741f1",
+        "mobilesdk_app_id": "1:1074033692644:android:3b58c56e6989c60d2741f1",
         "android_client_info": {
-          "package_name": "com.example.alnoortown_app"
+          "package_name": "com.alnoortown.residentapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1074033692644-dogkom72lieqg3hjobs2099ga38a7cea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDbX9BT2Be4s0G2X3KQC2Zc1Z6PNCCgNE8"
@@ -20,7 +25,57 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074033692644-dogkom72lieqg3hjobs2099ga38a7cea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074033692644:android:53bb11575fa9ec2a2741f1",
+        "android_client_info": {
+          "package_name": "com.example.alnoortown_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074033692644-54sq4evesd973a77ta5d4pum79qba6l1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alnoortown_app",
+            "certificate_hash": "499f9786f9267bd2102f1de126b0be5686506659"
+          }
+        },
+        {
+          "client_id": "1074033692644-70cjc07234vitvrur807k3ibpnb7mvvm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alnoortown_app",
+            "certificate_hash": "9b341c926147d0f5ee4ec1882c01fb79c40f324e"
+          }
+        },
+        {
+          "client_id": "1074033692644-dogkom72lieqg3hjobs2099ga38a7cea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbX9BT2Be4s0G2X3KQC2Zc1Z6PNCCgNE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074033692644-dogkom72lieqg3hjobs2099ga38a7cea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -1,8 +1,11 @@
 //
 // import 'dart:io';
+// import 'dart:convert';
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 // import 'package:image_picker/image_picker.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:http_parser/http_parser.dart';
 // import '../providers/auth_provider.dart';
 // import 'login_screen.dart'; // for AppColors
 //
@@ -67,9 +70,23 @@
 //
 //   Future<void> _pickImage(ImageSource source) async {
 //     try {
-//       final picker     = ImagePicker();
-//       final pickedFile = await picker.pickImage(source: source, maxWidth: 1920, maxHeight: 1080, imageQuality: 85);
-//       if (pickedFile != null) setState(() => _selectedImage = File(pickedFile.path));
+//       final picker = ImagePicker();
+//       final pickedFile = await picker.pickImage(
+//         source: source,
+//         maxWidth: 800,
+//         maxHeight: 800,
+//         imageQuality: 50,  // Compress heavily
+//       );
+//       if (pickedFile != null) {
+//         final imageFile = File(pickedFile.path);
+//         if (await imageFile.exists()) {
+//           final size = await imageFile.length();
+//           print('Image file size: $size bytes');
+//           setState(() => _selectedImage = imageFile);
+//         } else {
+//           _showSnack('Failed to load image', isError: true);
+//         }
+//       }
 //     } catch (e) {
 //       _showSnack('Error picking image: $e', isError: true);
 //     }
@@ -130,14 +147,54 @@
 //       _showSnack('Please select a category', isError: true);
 //       return;
 //     }
-//
 //     setState(() => _isSubmitting = true);
-//     await Future.delayed(const Duration(seconds: 2));
-//     setState(() => _isSubmitting = false);
 //
-//     if (mounted) {
-//       _showSnack('Complaint submitted successfully');
-//       Navigator.pop(context);
+//     try {
+//       final uri = Uri.parse('https://cloud.metaxperts.net:8443/erp/alnoor_town/complaints/post');
+//
+//       // Convert image to base64 string
+//       String? base64Image;
+//       if (_selectedImage != null) {
+//         final imageBytes = await _selectedImage!.readAsBytes();
+//         base64Image = base64Encode(imageBytes);
+//         print('Image base64 length: ${base64Image.length}');
+//       }
+//
+//       // Send as JSON — matching Oracle bind variables exactly
+//       final response = await http.post(
+//         uri,
+//         headers: {'Content-Type': 'application/json'},
+//         body: jsonEncode({
+//           'full_name':    _userName,
+//           'father_name':  _userFatherName,
+//           'cnic':         _cnicNumber,
+//           'contact_no':   _phoneNumber,
+//           'house_number': _houseNumber,
+//           'category':     _selectedCategory,
+//           'description':  _descriptionController.text.trim(),
+//           'image':        base64Image,   // null if no image selected
+//         }),
+//       );
+//
+//       print('Status: ${response.statusCode}');
+//       print('Body: ${response.body}');
+//
+//       if (mounted) {
+//         setState(() => _isSubmitting = false);
+//         if (response.statusCode == 200 || response.statusCode == 201) {
+//           _showSnack('Complaint submitted successfully!');
+//           await Future.delayed(const Duration(seconds: 1));
+//           if (mounted) Navigator.pop(context);
+//         } else {
+//           _showSnack('Failed. Status: ${response.statusCode}', isError: true);
+//         }
+//       }
+//     } catch (e) {
+//       print('Error: $e');
+//       if (mounted) {
+//         setState(() => _isSubmitting = false);
+//         _showSnack('Error: $e', isError: true);
+//       }
 //     }
 //   }
 //
@@ -734,25 +791,42 @@ class _ComplaintScreenState extends State<ComplaintScreen> with TickerProviderSt
           _cnicNumber.isNotEmpty &&
           _userFatherName.isNotEmpty;
 
+  // Oracle VARCHAR2 in PL/SQL maxes at 32,767 bytes.
+  // base64 inflates by ~33%, so raw image must stay under ~22,000 bytes.
+  // We target 20,000 bytes to leave a safe margin.
+  static const int _maxImageBytes = 20000;
+
   Future<void> _pickImage(ImageSource source) async {
     try {
       final picker = ImagePicker();
+      // Step 1: pick with aggressive in-picker compression
       final pickedFile = await picker.pickImage(
         source: source,
-        maxWidth: 800,
-        maxHeight: 800,
-        imageQuality: 50,  // Compress heavily
+        maxWidth: 400,
+        maxHeight: 400,
+        imageQuality: 40,
       );
-      if (pickedFile != null) {
-        final imageFile = File(pickedFile.path);
-        if (await imageFile.exists()) {
-          final size = await imageFile.length();
-          print('Image file size: $size bytes');
-          setState(() => _selectedImage = imageFile);
-        } else {
-          _showSnack('Failed to load image', isError: true);
-        }
+      if (pickedFile == null) return;
+
+      final imageFile = File(pickedFile.path);
+      if (!await imageFile.exists()) {
+        _showSnack('Failed to load image', isError: true);
+        return;
       }
+
+      // Step 2: hard size guard — reject before it causes ORA-06502
+      final size = await imageFile.length();
+      print('Image file size: $size bytes');
+      if (size > _maxImageBytes) {
+        _showSnack(
+          'Image too large (${(size / 1024).toStringAsFixed(0)} KB). '
+              'Please choose a smaller photo.',
+          isError: true,
+        );
+        return;
+      }
+
+      setState(() => _selectedImage = imageFile);
     } catch (e) {
       _showSnack('Error picking image: $e', isError: true);
     }
@@ -818,12 +892,26 @@ class _ComplaintScreenState extends State<ComplaintScreen> with TickerProviderSt
     try {
       final uri = Uri.parse('https://cloud.metaxperts.net:8443/erp/alnoor_town/complaints/post');
 
-      // Convert image to base64 string
+      // Convert image to base64 string with MIME type prefix
+      // Oracle APEX requires the data URI format: data:<mime>;base64,<data>
       String? base64Image;
       if (_selectedImage != null) {
         final imageBytes = await _selectedImage!.readAsBytes();
-        base64Image = base64Encode(imageBytes);
+        final rawBase64  = base64Encode(imageBytes);
+
+        // Detect MIME type from file extension (APEX rejects plain base64)
+        final ext = _selectedImage!.path.split('.').last.toLowerCase();
+        final mime = switch (ext) {
+          'png'  => 'image/png',
+          'gif'  => 'image/gif',
+          'webp' => 'image/webp',
+          _      => 'image/jpeg',   // jpg / jpeg / default
+        };
+
+        base64Image = 'data:$mime;base64,$rawBase64';
+        print('Image file size: ${imageBytes.length} bytes');
         print('Image base64 length: ${base64Image.length}');
+        print('Image MIME type: $mime');
       }
 
       // Send as JSON — matching Oracle bind variables exactly
@@ -1372,6 +1460,7 @@ class _GoldDivider extends StatelessWidget {
 // Helper widget for bullet points (kept for backward compatibility)
 class BulletPoint extends StatelessWidget {
   final String text;
+
   const BulletPoint({super.key, required this.text});
 
   @override
@@ -1380,8 +1469,11 @@ class BulletPoint extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8, bottom: 4),
       child: Row(
         children: [
-          const Text('• ', style: TextStyle(fontFamily: 'Cormorant', fontSize: 14, color: AppColors.gold)),
-          Text(text, style: const TextStyle(fontFamily: 'Cormorant', fontSize: 14, color: AppColors.charcoal)),
+          const Text('• ', style: TextStyle(
+              fontFamily: 'Cormorant', fontSize: 14, color: AppColors.gold)),
+          Text(text, style: const TextStyle(fontFamily: 'Cormorant',
+              fontSize: 14,
+              color: AppColors.charcoal)),
         ],
       ),
     );

@@ -1,4 +1,5 @@
 
+import 'package:alnoortown.residentapp/services/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,7 @@ import 'providers/auth_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/splash_screen.dart';          // ← add this
-import 'package:alnoortown_app/services/home_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
